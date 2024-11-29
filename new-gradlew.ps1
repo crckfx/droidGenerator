@@ -36,60 +36,40 @@ New-Item -ItemType Directory -Path $appDir, $srcDir, $javaDir, $resDir -Force | 
 
 # Create settings.gradle.kts (overwrite to include app module)
 Write-Host "Updating settings.gradle.kts..."
-# $settingsContent = & "$builder\writers\write_settings.ps1" -projectRoot $projectRoot -projectName $projectName
-$settingsContent = & "$builder\writers\write_settings.ps1"
-$settingsContent | Out-File -FilePath "$projectRoot\settings.gradle.kts" -Encoding utf8
-# & "$builder\writers\write_settings.ps1" | Out-File -FilePath "$projectRoot\settings.gradle.kts" -Encoding utf8
-
+& "$builder\writers\write_settings.ps1" | Out-File -FilePath "$projectRoot\settings.gradle.kts" -Encoding utf8
 
 # Create (overwrite?) base build.gradle.kts
 Write-Host "Creating base build.gradle.kts..."
-$rootBuildContent = & "$builder\writers\write_build_root.ps1" 
-$rootBuildContent | Out-File -FilePath "$projectRoot\build.gradle.kts" -Encoding utf8
+& "$builder\writers\write_build_root.ps1" | Out-File -FilePath "$projectRoot\build.gradle.kts" -Encoding utf8
 
 # Create app build.gradle.kts
-$appBuildContent = & "$builder\writers\write_build_app.ps1"
-$appBuildContent | Out-File -FilePath "$appDir\build.gradle.kts" -Encoding utf8
+& "$builder\writers\write_build_app.ps1" | Out-File -FilePath "$appDir\build.gradle.kts" -Encoding utf8
 
 # Create local.properties
 Write-Host "Overwriting local.properties with demo..."
-@"
-sdk.dir=$androidSdkPath
-"@ | Out-File -FilePath "$projectRoot\local.properties" -Encoding utf8
+& "$builder\writers\write_properties_local.ps1" | Out-File -FilePath "$projectRoot\local.properties" -Encoding utf8
 
 # Create gradle.properties (optional but recommended for optimizations)
 Write-Host "Creating gradle.properties..."
-@"
-org.gradle.configuration-cache=true
-
-android.useAndroidX=true
-android.enableJetifier=true
-"@ | Out-File -FilePath "$projectRoot\gradle.properties" -Encoding utf8
+& "$builder\writers\write_properties_gradle.ps1" | Out-File -FilePath "$projectRoot\gradle.properties" -Encoding utf8
 
 # Create AndroidManifest.xml (empty for now)
 Write-Host "Creating demo AndroidManifest.xml..."
-# New-Item -Path "$srcDir\AndroidManifest.xml" -ItemType "file" -Force | Out-Null
-# Copy-Item -Path "$builder\demo\AndroidManifest.xml" -Destination "$srcDir\AndroidManifest.xml"
-$androidManifestContent = & "$builder\writers\write_androidManifest.ps1"
-$androidManifestContent | Out-File -FilePath "$srcDir\AndroidManifest.xml"
+& "$builder\writers\write_androidManifest.ps1" | Out-File -FilePath "$srcDir\AndroidManifest.xml"
 
 
 # Create MainActivity.java
-# Write-Host "Copying demo MainActivity.java..."
-# New-Item -Path "$javaDir\MainActivity.java" -ItemType "file" -Force | Out-Null
-# Copy-Item -Path "$builder\demo\MainActivity.java" -Destination "$javaDir\MainActivity.java"
-$mainActivityContent = & "$builder\writers\write_mainActivity.ps1"
-$mainActivityContent | Out-File -FilePath "$javaDir\MainActivity.java"
+& "$builder\writers\write_mainActivity.ps1" | Out-File -FilePath "$javaDir\MainActivity.java"
 
 
-# Copy in dummy resources
-Write-Host "Copying demo resources..."
+# create some example resource subdirectories and example files in them
+Write-Host "creating demo resources..."
+# # res/layout/
 New-Item -ItemType Directory -Path "$resDir\layout" -Force | Out-Null
+& "$builder\writers\write_xml_layout.ps1" | | Out-File -FilePath "$resDir\layout\layout.xml"
+# # res/values/
 New-Item -ItemType Directory -Path "$resDir\values" -Force | Out-Null
-
-Copy-Item -Path "$builder\demo\res\layout\layout.xml" -Destination "$resDir\layout\layout.xml"
-Copy-Item -Path "$builder\demo\res\values\strings.xml" -Destination "$resDir\values\strings.xml"
-
+& "$builder\writers\write_xml_strings.ps1" | | Out-File -FilePath "$resDir\values\strings.xml"
 
 # Completion message
 Write-Host "Android project '$projectName' setup complete!" -ForegroundColor Green
@@ -99,3 +79,5 @@ Write-Host "Android project '$projectName' setup complete!" -ForegroundColor Gre
 # # 1. COPY IN THE MANIFEST, MAINACTIVITY AND SOME RES WITH "COPY" OR SOMETHING
 # # 
 # # 2. WRITE IN THE CONTENTS MANUALLY, OPTIONALLY WITH SUBMODULES
+# UPDATE: TRIED BOTH OF THESE AND MOSTLY WENT WITH 2. 
+## UPDATE(2): looks like we're doing write-only; no copying.
