@@ -16,7 +16,7 @@ if ($org) { $orgName = $org }
 ## set some shorthands based on the provided config
 $builder = "$PSScriptRoot"
 $projectRoot = "$devFolder\$projectName"
-$appDir = "$projectRoot\app"
+$appDir = "$projectRoot\$appName"
 $srcDir = "$appDir\src\main"
 $javaDir = "$srcDir\java\com\$orgName\$appName"
 $resDir = "$srcDir\res"

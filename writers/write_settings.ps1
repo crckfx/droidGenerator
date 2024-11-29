@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "$projectName"
-include(":app")
+include(":$appName")
 "@
 
 return $settingsContent
