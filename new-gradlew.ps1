@@ -57,27 +57,17 @@ Write-Host "Creating gradle.properties..."
 Write-Host "Creating demo AndroidManifest.xml..."
 & "$builder\writers\write_androidManifest.ps1" | Out-File -FilePath "$srcDir\AndroidManifest.xml"
 
-
 # Create MainActivity.java
 & "$builder\writers\write_mainActivity.ps1" | Out-File -FilePath "$javaDir\MainActivity.java"
-
 
 # create some example resource subdirectories and example files in them
 Write-Host "creating demo resources..."
 # # res/layout/
 New-Item -ItemType Directory -Path "$resDir\layout" -Force | Out-Null
-& "$builder\writers\write_xml_layout.ps1" | | Out-File -FilePath "$resDir\layout\layout.xml"
+& "$builder\writers\write_xml_layout.ps1" | Out-File -FilePath "$resDir\layout\layout.xml"
 # # res/values/
 New-Item -ItemType Directory -Path "$resDir\values" -Force | Out-Null
-& "$builder\writers\write_xml_strings.ps1" | | Out-File -FilePath "$resDir\values\strings.xml"
+& "$builder\writers\write_xml_strings.ps1" | Out-File -FilePath "$resDir\values\strings.xml"
 
 # Completion message
 Write-Host "Android project '$projectName' setup complete!" -ForegroundColor Green
-
-# SO FAR WE HAVE BUILT THE SHELL CORRECTLY.
-# WE EITHER:
-# # 1. COPY IN THE MANIFEST, MAINACTIVITY AND SOME RES WITH "COPY" OR SOMETHING
-# # 
-# # 2. WRITE IN THE CONTENTS MANUALLY, OPTIONALLY WITH SUBMODULES
-# UPDATE: TRIED BOTH OF THESE AND MOSTLY WENT WITH 2. 
-## UPDATE(2): looks like we're doing write-only; no copying.
