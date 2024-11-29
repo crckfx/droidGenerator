@@ -14,6 +14,7 @@ if ($project) { $projectName = $project }
 if ($org) { $orgName = $org }
 
 ## set some shorthands based on the provided config
+$builder = "$PSScriptRoot"
 $projectRoot = "$devFolder\$projectName"
 $appDir = "$projectRoot\app"
 $srcDir = "$appDir\src\main"
